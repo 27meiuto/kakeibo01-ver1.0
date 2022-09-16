@@ -149,7 +149,7 @@ export default {
     tableHeaders () {
       return [
         { text: '日付', value: 'date', align: 'end' },
-        { text: 'タイトル', value: 'title', sortable: false },
+        { text: '内容', value: 'title', sortable: false },
         { text: 'カテゴリ', value: 'category', sortable: false },
         { text: 'タグ', value: 'tags', sortable: false },
         { text: '収入', value: 'income', align: 'end' },
