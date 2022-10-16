@@ -74,9 +74,7 @@
             label="タグ"
             v-model="tags"
             :items="tagItems"
-            multiple
-            chips
-            :rules="[tagRule]"
+            hide-details
           />
           <!-- 金額 -->
           <v-text-field
@@ -150,7 +148,7 @@ export default {
       /** カテゴリ */
       category: '',
       /** タグ */
-      tags: [],
+      tags: '',
       /** 金額 */
       amount: 0,
       /** メモ */
@@ -166,7 +164,6 @@ export default {
         v => v.trim().length > 0 || 'タイトルは必須です',
         v => v.length <= 20 || '20文字以内で入力してください'
       ],
-      tagRule: v => v.length <= 5 || 'タグは5種類以内で選択してください',
       amountRules: [
         v => v >= 0 || '金額は0以上で入力してください',
         v => Number.isInteger(v) || '整数で入力してください'
@@ -225,7 +222,7 @@ export default {
         date: this.date,
         title: this.title,
         category: this.category,
-        tags: this.tags.join(','),
+        tags: this.tags,
         memo: this.memo,
         income: null,
         outgo: null

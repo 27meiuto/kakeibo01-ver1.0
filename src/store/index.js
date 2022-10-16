@@ -25,12 +25,12 @@ const state = {
 
   /** 設定 */
   settings: {
-    appName: 'GAS 家計簿',
+    appName: '家計簿',
     apiUrl: '',
     authToken: '',
-    strIncomeItems: '給料, ボーナス, 繰越',
-    strOutgoItems: '食費, 趣味, 交通費, 買い物, 交際費, 生活費, 住宅, 通信, 車, 税金',
-    strTagItems: '固定費, カード'
+    strIncomeItems: '給料, 臨時',
+    strOutgoItems: '食費, 外食費, 日用品, 私物-才, 私物-友, 旅行, 固定費, その他',
+    strTagItems: '現金, カード'
   }
 }
 

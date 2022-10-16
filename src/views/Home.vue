@@ -3,7 +3,7 @@
     <v-card>
       <v-card-title>
         <!-- 月選択 -->
-        <v-col cols="8">
+        <v-col cols="8" sm="3">
           <v-menu 
             ref="menu"
             v-model="menu"
@@ -23,6 +23,7 @@
                 hide-details
               />
             </template>
+
             <v-date-picker
               v-model="yearMonth"
               type="month"
@@ -38,14 +39,50 @@
           </v-menu>
         </v-col>
         <v-spacer/>
+
         <!-- 追加ボタン -->
         <v-col class="text-right" cols="4">
           <v-btn dark color="green" @click="onClickAdd">
             <v-icon>mdi-plus</v-icon>
           </v-btn>
         </v-col>
+
+        <!-- 収支総計 -->
+        <v-col class="overflow-x-auto" cols="12" sm="8">
+          <div class="summary">
+            <div class="mr-4">
+              <table class="text-right">
+                <tr>
+                  <td>収入：</td>
+                  <td>{{ separate(sum.income) }}</td>
+                </tr>
+                <tr>
+                  <td>支出：</td>
+                  <td>{{ separate(sum.outgo) }}</td>
+                </tr>
+                <tr>
+                  <td>収支差：</td>
+                  <td>{{ separate(sum.income - sum.outgo) }}</td>
+                </tr>
+              </table>
+            </div>
+            <div v-for="category in sum.categories" :key="category[0]">
+              <v-progress-circular
+                class="mr-2"
+                :rotate="-90"
+                :size="60"
+                :width="5"
+                :value="category[1]"
+                color="teal"
+              >
+                {{ category[0] }}
+              </v-progress-circular>
+            </div>
+          </div>
+        </v-col>
+
         <!-- 検索フォーム -->
-        <v-col cols="12">
+        <v-col cols="12" sm="4">
           <v-text-field
             v-model="search"
             append-icon="mdi-magnify"
@@ -54,7 +91,9 @@
             hide-details
           />
         </v-col>
+
       </v-card-title>
+
       <!-- テーブル -->
       <v-data-table
         class="text-no-wrap"
@@ -65,7 +104,7 @@
         :loading="loading"
         :sort-by="'date'"
         :sort-desc="true"
-        :items-per-page="30"
+        :items-per-page="10"
         mobile-breakpoint="0"
       >
         <!-- 日付列 -->
@@ -88,7 +127,7 @@
         <template v-slot:[`item.income`]="{ item }">
           {{ separate(item.income) }}
         </template>
-        <!-- タグ列 -->
+        <!-- 支出列 -->
         <template v-slot:[`item.outgo`]="{ item }">
           {{ separate(item.outgo) }}
         </template>
@@ -133,7 +172,8 @@ export default {
       /** 選択年月 */
       yearMonth: `${year}-${month}`,
       /** テーブルに表示させるデータ */
-      tableData: []
+      tableData: [],
+      footerProps: {'items-per-page-options': [10, 30, 50]}
     }
   },
 
@@ -160,8 +200,38 @@ export default {
     },
 
     /** テーブルのフッター設定 */
-    footerProps () {
-      return { itemsPerPageText: '', itemsPerPageOptions: [] }
+
+    /** 収支総計 */
+    sum () {
+      let income = 0
+      let outgo = 0
+      const categoryOutgo = {}
+      const categories = []
+
+      // 収支の合計とカテゴリ別の支出を計算
+      for (const row of this.tableData) {
+        if (row.income !== null) {
+          income += row.income
+        } else {
+          outgo += row.outgo
+          if (categoryOutgo[row.category]) {
+            categoryOutgo[row.category] += row.outgo
+          } else {
+            categoryOutgo[row.category] = row.outgo
+          }
+        }
+      }
+      // カテゴリ別の支出を降順にソート
+      const sorted = Object.entries(categoryOutgo).sort((a, b) => b[1] - a[1])
+      for (const [category, value] of sorted) {
+        const percent = parseInt((value / outgo) * 100)
+        categories.push([category, percent])
+      }
+      return {
+        income,
+        outgo,
+        categories
+      }
     }
   },
 
@@ -215,3 +285,12 @@ export default {
   }
 }
 </script>
+
+<style>
+.summary {
+  display: flex;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  line-height: 1.2rem;
+}
+</style>

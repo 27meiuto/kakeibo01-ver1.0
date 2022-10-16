@@ -5,14 +5,22 @@
       <!-- タイトル -->
       <v-toolbar-title>{{ appName }}</v-toolbar-title>
       <v-spacer></v-spacer>
-      <!-- テーブルアイコンのボタン -->
+
+      <!-- 合計テーブルアイコンのボタン -->
+      <v-btn icon to="/totals">
+        <v-icon>mdi-clipboard-list</v-icon>
+      </v-btn>
+
+      <!-- 月別テーブルアイコンのボタン -->
       <v-btn icon to="/">
         <v-icon>mdi-file-table-outline</v-icon>
       </v-btn>
+
       <!-- 歯車アイコンのボタン -->
       <v-btn icon to="/settings">
         <v-icon>mdi-cog</v-icon>
       </v-btn>
+
     </v-app-bar>
     <!-- メインコンテンツ -->
     <v-main>
