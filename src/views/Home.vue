@@ -165,7 +165,7 @@ export default {
     const month = ('0' + (today.getMonth() + 1)).slice(-2)
 
     return {
-      /** 月選択メニューの状態 */
+      /** 月選択メニューの状態  */
       menu: false,
       /** 検索文字 */
       search: '',
