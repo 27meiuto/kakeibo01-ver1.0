@@ -79,6 +79,7 @@
           <!-- 金額 -->
           <v-text-field
             label="金額"
+            type="number"
             v-model.number="amount"
             prefix="￥"
             pattern="[0-9]*"

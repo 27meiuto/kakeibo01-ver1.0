@@ -16,16 +16,14 @@ gasApi.interceptors.response.use(res => {
   return Promise.reject(err)
 })
 
-/**
- * APIのURLを設定します
+/** APIのURLを設定します
  * @param {String} url
  */
 const setUrl = url => {
   gasApi.defaults.baseURL = url
 }
 
-/**
- * authTokenを設定します
+/** authTokenを設定します
  * @param {String} token
  */
 let authToken = ''
@@ -33,8 +31,7 @@ const setAuthToken = token => {
   authToken = token
 }
 
-/**
- * 指定年月のデータを取得します
+/** 指定年月のデータを取得します
  * @param {String} yearMonth
  * @returns {Promise}
  */
