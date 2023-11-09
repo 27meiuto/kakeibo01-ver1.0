@@ -105,8 +105,7 @@
         :sort-by="'date'"
         :sort-desc="true"
         :items-per-page="10"
-        mobile-breakpoint="0"
-      >
+        mobile-breakpoint="0" >
         <!-- 日付列 -->
         <template v-slot:[`item.date`]="{ item }">
           {{ parseInt(item.date.slice(-2)) + '日' }}
@@ -173,7 +172,7 @@ export default {
       yearMonth: `${year}-${month}`,
       /** テーブルに表示させるデータ */
       tableData: [],
-      footerProps: {'items-per-page-options': [10, 30, 50]}
+      footerProps: {'items-per-page-options': [10, 30, 50, 100]}
     }
   },
 
