@@ -84,6 +84,7 @@
             prefix="￥"
             pattern="[0-9]*"
             :rules="amountRules"
+            inputmode="numeric"
           />
           <!-- メモ -->
           <v-text-field
@@ -166,7 +167,8 @@ export default {
         v => v.length <= 20 || '20文字以内で入力してください'
       ],
       amountRules: [
-        v => v >= 0 || '金額は0以上で入力してください',
+        value => !!value || '金額は必須です',
+        //v => v >= 0 || '金額は0以上で入力してください',
         v => Number.isInteger(v) || '整数で入力してください'
       ],
       memoRule: v => v.length <= 50 || 'メモは50文字以内で入力してください'
@@ -268,6 +270,8 @@ export default {
         this.categoryItems = this.outgoItems
         this.amount = item.outgo || 0
       }
+      // 金額の初期値を null に変更
+      this.amount = this.inout === 'income' ? (item.income != null ? item.income : null) : (item.outgo != null ? item.outgo : null)
 
       this.category = item.category || this.categoryItems[0]
       this.tags = item.tags ? item.tags.split(',') : []

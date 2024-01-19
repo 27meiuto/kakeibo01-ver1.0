@@ -11,10 +11,13 @@ Vue.use(Vuex)
 const state = {
   /** 家計簿データ */
   abData: {},
+  /** 家計簿データ(セル指定) */
+  spabData: {},
 
   /** ローディング状態 */
   loading: {
     fetch: false,
+    spfetch: false,
     add: false,
     update: false,
     delete: false
@@ -29,7 +32,7 @@ const state = {
     apiUrl: '',
     authToken: '',
     strIncomeItems: '給料, 臨時',
-    strOutgoItems: '食費, 外食費, 日用品, 私物-才, 私物-友, 旅行, 固定費, その他',
+    strOutgoItems: '家賃, 光熱費, 食費, 日用品, 小遣い, 娯楽, 通信費, 保険, 貯蓄, その他',
     strTagItems: '現金, カード'
   }
 }
@@ -42,6 +45,10 @@ const mutations = {
   /** 指定年月の家計簿データをセットします */
   setAbData (state, { yearMonth, list }) {
     state.abData[yearMonth] = list
+  },
+  /** 指定年月の特定の家計簿データをセットします */
+  setSpAbData (state, { yearMonth, cellValue }) {
+    state.spabData[yearMonth] = cellValue
   },
 
   /** データを追加します */
@@ -89,6 +96,7 @@ const mutations = {
     gasApi.setUrl(apiUrl)
     gasApi.setAuthToken(authToken)
     state.abData = {}
+    state.spabData = {}
 
     localStorage.setItem('settings', JSON.stringify(settings))
   },
@@ -112,7 +120,7 @@ const mutations = {
  */
 const actions = {
   /** 指定年月の家計簿データを取得します */
-  async fetchAbData ({ commit }, { yearMonth }) {
+  async fetchAbData ({ commit },{ yearMonth }) {
     const type = 'fetch'
     commit('setLoading', { type, v: true })
     try {
@@ -121,6 +129,24 @@ const actions = {
     } catch (e) {
       commit('setErrorMessage', { message: e })
       commit('setAbData', { yearMonth, list: [] })
+    } finally {
+      commit('setLoading', { type, v: false })
+    }
+  },
+
+  /** 指定年月の家計簿データ(セル指定)を取得します */
+  async spfetchAbData ({ commit },{ yearMonth }) {
+    const type = 'spfetch'
+    // 取得の前にローディングをtrueにする
+    commit('setLoading', { type, v: true })
+    try {
+      // APIにリクエスト送信
+      const res = await gasApi.spfetch(yearMonth)
+      // 取得できたらSpAbDataにセットする
+      commit('setSpAbData', { yearMonth, cellValue: res.data })
+    } catch (e) {
+      commit('setErrorMessage', { message: e })
+      commit('setSpAbData', { yearMonth, cellValue: [] })
     } finally {
       commit('setLoading', { type, v: false })
     }

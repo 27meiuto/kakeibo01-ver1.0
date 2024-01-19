@@ -45,6 +45,21 @@ const fetch = yearMonth => {
   })
 }
 
+/** 指定年月の特定のデータを取得します
+ * @param {String} yearMonth
+ * @returns {Promise}
+ */
+const spfetch = yearMonth => {
+  return gasApi.post('', {
+    method: 'SPGET',
+    authToken,
+    params: {
+      yearMonth
+    }
+  })
+}
+
+
 /**
  * データを追加します
  * @param {Object} item
@@ -98,6 +113,7 @@ export default {
   setUrl,
   setAuthToken,
   fetch,
+  spfetch,
   add,
   delete: $delete,
   update

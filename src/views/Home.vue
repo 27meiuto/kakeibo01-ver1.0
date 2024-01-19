@@ -54,15 +54,15 @@
               <table class="text-right">
                 <tr>
                   <td>収入：</td>
-                  <td>{{ separate(sum.income) }}</td>
+                  <td>{{ separate(cellValue[0]) }}</td>
                 </tr>
                 <tr>
                   <td>支出：</td>
-                  <td>{{ separate(sum.outgo) }}</td>
+                  <td>{{ separate(cellValue[1]) }}</td>
                 </tr>
                 <tr>
-                  <td>収支差：</td>
-                  <td>{{ separate(sum.income - sum.outgo) }}</td>
+                  <td>残金：</td>
+                  <td>{{ separate(cellValue[0] - cellValue[1]) }}</td>
                 </tr>
               </table>
             </div>
@@ -137,6 +137,7 @@
         </template>
       </v-data-table>
     </v-card>
+    
     <!-- 追加／編集ダイアログ -->
     <ItemDialog ref="itemDialog"/>
     <!-- 削除ダイアログ -->
@@ -146,12 +147,15 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-
 import ItemDialog from '../components/ItemDialog.vue'
 import DeleteDialog from '../components/DeleteDialog.vue'
 
 export default {
   name: 'Home',
+
+  mounted() {
+    console.log('Current state of the store:', this.$store.state)
+  },
 
   components: {
     ItemDialog,
@@ -172,7 +176,9 @@ export default {
       yearMonth: `${year}-${month}`,
       /** テーブルに表示させるデータ */
       tableData: [],
-      footerProps: {'items-per-page-options': [10, 30, 50, 100]}
+      /** 特定のセル値 */
+      cellValue: [],
+      footerProps: {'items-per-page-options': [10, 50, 100, 1000]}
     }
   },
 
@@ -180,8 +186,10 @@ export default {
     ...mapState({
       /** 家計簿データ */
       abData: state => state.abData,
+      spabData: state => state.spabData,
       /** ローディング状態 */
       loading: state => state.loading.fetch,
+
     }),
 
     /** テーブルのヘッダー設定 */
@@ -199,7 +207,6 @@ export default {
     },
 
     /** テーブルのフッター設定 */
-
     /** 収支総計 */
     sum () {
       let income = 0
@@ -237,13 +244,16 @@ export default {
   methods: {
     ...mapActions([
       /** 家計簿データを取得 */
-      'fetchAbData'
+      'fetchAbData',
+      /** 家計簿データを取得(セル指定) */
+      'spfetchAbData'
     ]),
-
+    
     /** 表示させるデータを更新します */
     async updateTable () {
       const yearMonth = this.yearMonth
       const list = this.abData[yearMonth]
+      const cellValue = this.spabData[yearMonth]
 
       if (list) {
         this.tableData = list
@@ -251,8 +261,15 @@ export default {
         await this.fetchAbData({ yearMonth })
         this.tableData = this.abData[yearMonth]
       }
-    },
 
+      if (cellValue) {
+        this.cellValue = cellValue
+      } else {
+        await this.spfetchAbData({ yearMonth })
+        this.cellValue = this.spabData[yearMonth]
+      }
+
+    },
     /**
      * 数字を3桁区切りにして返します。
      * 受け取った数が null のときは null を返します。

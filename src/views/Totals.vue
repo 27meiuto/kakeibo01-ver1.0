@@ -5,13 +5,13 @@
       <v-toolbar color="cyan" dark>
         <v-tabs v-model="tabs" centered>
           <v-tab href="#tab-1" @click="select('1')">Total Amount</v-tab>
-          <v-tab href="#tab-2" @click="select('2')">Total Card</v-tab>
-          <v-tab href="#tab-3" @click="select('3')">Total Cash</v-tab>
+          <v-tab href="#tab-2" @click="select('2')">Breakdown</v-tab>
         </v-tabs>
       </v-toolbar>
 
       <!-- tab内容表示 -->
       <v-tabs-items v-model="tabs">
+        <!-- 総合計内容表示 -->
         <v-tab-item value="tab-1">
           <v-card-title class="text-h5">{{ tabdetaileName }}</v-card-title>
           <v-card-text>
@@ -24,26 +24,32 @@
               :sort-desc="true"
               mobile-breakpoint="0">
 
-              <template v-slot:[`item.foodexpense`]="{ item }">
-                {{ separate(item.foodexpense) }}
+              <template v-slot:[`item.house`]="{ item }">
+                {{ separate(item.house) }}
               </template>
-              <template v-slot:[`item.eatout`]="{ item }">
-                {{ separate(item.eatout) }}
+              <template v-slot:[`item.utilitycosts`]="{ item }">
+                {{ separate(item.utilitycosts) }}
+              </template>
+              <template v-slot:[`item.food`]="{ item }">
+                {{ separate(item.food) }}
               </template>
               <template v-slot:[`item.necessities`]="{ item }">
                 {{ separate(item.necessities) }}
               </template>
-              <template v-slot:[`item.toshi`]="{ item }">
-                {{ separate(item.toshi) }}
+              <template v-slot:[`item.pocketmoney`]="{ item }">
+                {{ separate(item.pocketmoney) }}
               </template>
-              <template v-slot:[`item.yuka`]="{ item }">
-                {{ separate(item.yuka) }}
+              <template v-slot:[`item.entertainment`]="{ item }">
+                {{ separate(item.entertainment) }}
               </template>
-              <template v-slot:[`item.travel`]="{ item }">
-                {{ separate(item.travel) }}
+              <template v-slot:[`item.communication`]="{ item }">
+                {{ separate(item.communication) }}
               </template>
-              <template v-slot:[`item.fixedost`]="{ item }">
-                {{ separate(item.fixedost) }}
+              <template v-slot:[`item.insurance`]="{ item }">
+                {{ separate(item.insurance) }}
+              </template>
+              <template v-slot:[`item.savings`]="{ item }">
+                {{ separate(item.savings) }}
               </template>
               <template v-slot:[`item.etc`]="{ item }">
                 {{ separate(item.etc) }}
@@ -53,85 +59,11 @@
           </v-card-text>
         </v-tab-item>
 
+        <!-- 内訳内容表示 -->
         <v-tab-item value="tab-2">
           <v-card-title class="text-h5">{{ tabdetaileName }}</v-card-title>
           <v-card-text>
-            <v-data-table class="text-no-wrap"
-              :headers="tableHeaders"
-              :items="tableData"
-              :footer-props="footerProps"
-              :loading="loading"
-              :sort-by="'month'"
-              :sort-desc="true"
-              mobile-breakpoint="0">
-
-              <template v-slot:[`item.foodexpense`]="{ item }">
-                {{ separate(item.foodexpense) }}
-              </template>
-              <template v-slot:[`item.eatout`]="{ item }">
-                {{ separate(item.eatout) }}
-              </template>
-              <template v-slot:[`item.necessities`]="{ item }">
-                {{ separate(item.necessities) }}
-              </template>
-              <template v-slot:[`item.toshi`]="{ item }">
-                {{ separate(item.toshi) }}
-              </template>
-              <template v-slot:[`item.yuka`]="{ item }">
-                {{ separate(item.yuka) }}
-              </template>
-              <template v-slot:[`item.travel`]="{ item }">
-                {{ separate(item.travel) }}
-              </template>
-              <template v-slot:[`item.fixedost`]="{ item }">
-                {{ separate(item.fixedost) }}
-              </template>
-              <template v-slot:[`item.etc`]="{ item }">
-                {{ separate(item.etc) }}
-              </template>
-
-            </v-data-table>
-          </v-card-text>
-        </v-tab-item>
-
-        <v-tab-item value="tab-3">
-          <v-card-title class="text-h5">{{ tabdetaileName }}</v-card-title>
-          <v-card-text>
-            <v-data-table class="text-no-wrap"
-              :headers="tableHeaders"
-              :items="tableData"
-              :footer-props="footerProps"
-              :loading="loading"
-              :sort-by="'month'"
-              :sort-desc="true"
-              mobile-breakpoint="0">
-
-              <template v-slot:[`item.foodexpense`]="{ item }">
-                {{ separate(item.foodexpense) }}
-              </template>
-              <template v-slot:[`item.eatout`]="{ item }">
-                {{ separate(item.eatout) }}
-              </template>
-              <template v-slot:[`item.necessities`]="{ item }">
-                {{ separate(item.necessities) }}
-              </template>
-              <template v-slot:[`item.toshi`]="{ item }">
-                {{ separate(item.toshi) }}
-              </template>
-              <template v-slot:[`item.yuka`]="{ item }">
-                {{ separate(item.yuka) }}
-              </template>
-              <template v-slot:[`item.travel`]="{ item }">
-                {{ separate(item.travel) }}
-              </template>
-              <template v-slot:[`item.fixedost`]="{ item }">
-                {{ separate(item.fixedost) }}
-              </template>
-              <template v-slot:[`item.etc`]="{ item }">
-                {{ separate(item.etc) }}
-              </template>
-
-            </v-data-table>
+            <p>test</p>
           </v-card-text>
         </v-tab-item>
       </v-tabs-items>
@@ -150,7 +82,7 @@ export default {
     return {
       tabs: 'tab-1',
       tabdetaileName: `総合計`,
-      yearMonth: `9999-97`,
+      yearMonth: `9999-99`,
       tableData: [],
       footerProps: {'items-per-page-options': [12, 24, 36]}
     }
@@ -168,13 +100,15 @@ export default {
     tableHeaders () {
       return [
         { text: '月', value: 'month', align: 'end' },
-        { text: '食費', value: 'foodexpense', sortable: false },
-        { text: '外食', value: 'eatout', sortable: false },
+        { text: '家賃', value: 'house', sortable: false },
+        { text: '光熱費', value: 'utilitycosts', sortable: false },
+        { text: '食費', value: 'food', sortable: false },
         { text: '日用品', value: 'necessities', sortable: false },
-        { text: '私物(才王)', value: 'toshi', sortable: false },
-        { text: '私物(友香)', value: 'yuka', sortable: false },
-        { text: '旅行', value: 'travel', sortable: false },
-        { text: '固定費', value: 'fixedost', sortable: false },
+        { text: '小遣い', value: 'pocketmoney', sortable: false },
+        { text: '娯楽', value: 'entertainment', sortable: false },
+        { text: '通信費', value: 'communication', sortable: false },
+        { text: '保険', value: 'insurance', sortable: false },
+        { text: '貯蓄', value: 'savings', sortable: false },
         { text: 'その他', value: 'etc', sortable: false }
       ]
     }
@@ -188,13 +122,10 @@ export default {
     select: function (num) {
       if(num == '1'){
         this.tabdetaileName = '総合計' 
-        this.yearMonth = '9999-97' 
-      }else if(num == '2'){
-        this.tabdetaileName = 'カード合計' 
-        this.yearMonth = '9999-98' 
-      }else if(num == '3'){
-        this.tabdetaileName = '現金合計' 
         this.yearMonth = '9999-99' 
+      }else if(num == '2'){
+        this.tabdetaileName = '内訳' 
+        this.yearMonth = 'work'
       }
       this.updateTable()
     },
